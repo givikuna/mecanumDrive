@@ -4,9 +4,15 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.*;
+import java.util.function.*;
+
+// commands
+import frc.robot.commands.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -17,7 +23,12 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
+  private final Joystick leftJoystick = new Joystick(0); // used for moving around
+  private final Joystick rightJoystick = new Joystick(1); // used for turning
+
   private RobotContainer m_robotContainer;
+  private DriveTrain driveTrain;
+  private VerticalDrive verticalDrive;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -28,6 +39,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    driveTrain = new DriveTrain();
   }
 
   /**
@@ -58,13 +70,6 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-    /*
-     * String autoSelected = SmartDashboard.getString("Auto Selector",
-     * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-     * = new MyAutoCommand(); break; case "Default Auto": default:
-     * autonomousCommand = new ExampleCommand(); break; }
-     */
-
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -88,7 +93,70 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    String mode = "";
+    boolean turns = false;
+    /*
+    String[] modes = {
+      "verticalDrive",
+      "horizontalDrive",
+      "diagonalDrive",
+      "rest"
+    };
+    */
+
+    if (leftAtRest() && rightAtRest()) {
+      mode = "rest"; // nothing happens
+    } else if (leftXAtRest() && leftYAtRest() == false) {
+      mode = "verticalDrive";
+    } else if (leftXAtRest() == false && leftYAtRest()) {
+      mode = "horizontalDrive";
+    } else if (leftXAtRest() == false && leftYAtRest() == false) {
+      mode = "diagonalDrive";
+    }
+
+    if (rightAtRest() == false) {
+      turns = true;
+    }
+
+    if (mode == "verticalDrive") {
+      double speed = leftJoystick.getY();
+      Supplier<Double> v = () -> speed;
+      verticalDrive = new VerticalDrive(driveTrain, v, v);
+    } else if (mode == "horizontalDrive") {
+      // uses HorizontalDrive - to be written later
+    } else {
+      // uses DiagonalDrive - to be written later
+    }
+
+    if (turns) {
+      // turns the robot
+    }
+  }
+
+  public boolean leftAtRest() {
+    return leftYAtRest() && leftXAtRest();
+  }
+
+  public boolean rightAtRest() {
+    return rightYAtRest() && rightXAtRest();
+  }
+
+  public boolean leftYAtRest() {
+    return leftJoystick.getY() > -0.1 && leftJoystick.getY() < 0.1;
+  }
+
+  public boolean leftXAtRest() {
+    return leftJoystick.getX() > -0.1 && leftJoystick.getX() < 0.1;
+  }
+
+  public boolean rightYAtRest() {
+    return rightJoystick.getY() > -0.1 && rightJoystick.getY() < 0.1;
+  }
+
+  public boolean rightXAtRest() {
+    return rightJoystick.getX() > -0.1 && rightJoystick.getX() < 0.1;
+  }
 
   @Override
   public void testInit() {
