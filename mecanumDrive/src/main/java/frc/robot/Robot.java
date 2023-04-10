@@ -105,31 +105,17 @@ public class Robot extends TimedRobot {
     };
     */
 
-    if (leftAtRest() && rightAtRest()) {
-      mode = "rest"; // nothing happens
-    } else if (leftXAtRest() && leftYAtRest() == false) {
-      mode = "verticalDrive";
-    } else if (leftXAtRest() == false && leftYAtRest()) {
-      mode = "horizontalDrive";
-    } else if (leftXAtRest() == false && leftYAtRest() == false) {
-      mode = "diagonalDrive";
-    }
-
-    if (rightAtRest() == false) {
-      turns = true;
-    }
-
-    if (mode == "verticalDrive") {
+    if (leftXAtRest() && leftYAtRest() == false) {
       double speed = leftJoystick.getY();
       Supplier<Double> v = () -> speed;
       verticalDrive = new VerticalDrive(driveTrain, v, v);
-    } else if (mode == "horizontalDrive") {
+    } else if (leftXAtRest() == false && leftYAtRest()) {
       // uses HorizontalDrive - to be written later
-    } else {
+    } else if (leftXAtRest() == false && leftYAtRest() == false) {
       // uses DiagonalDrive - to be written later
     }
 
-    if (turns) {
+    if (rightAtRest() == false) {
       // turns the robot
     }
   }
