@@ -29,6 +29,7 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   private DriveTrain driveTrain;
   private VerticalDrive verticalDrive;
+  public HorizontalDrive horizontalDrive;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -106,11 +107,9 @@ public class Robot extends TimedRobot {
     */
 
     if (leftXAtRest() && leftYAtRest() == false) {
-      double speed = leftJoystick.getY();
-      Supplier<Double> v = () -> speed;
-      verticalDrive = new VerticalDrive(driveTrain, v, v);
+      verticalDrive = new VerticalDrive(driveTrain, () -> leftJoystick.getY(), () -> leftJoystick.getY());
     } else if (leftXAtRest() == false && leftYAtRest()) {
-      // uses HorizontalDrive - to be written later
+      horizontalDrive = new HorizontalDrive(driveTrain, () -> leftJoystick.getX(), () -> -leftJoystick.getX());
     } else if (leftXAtRest() == false && leftYAtRest() == false) {
       // uses DiagonalDrive - to be written later
     }
@@ -129,19 +128,19 @@ public class Robot extends TimedRobot {
   }
 
   public boolean leftYAtRest() {
-    return leftJoystick.getY() > -0.05 && leftJoystick.getY() < 0.05;
+    return leftJoystick.getY() > -0.1 && leftJoystick.getY() < 0.1;
   }
 
   public boolean leftXAtRest() {
-    return leftJoystick.getX() > -0.05 && leftJoystick.getX() < 0.05;
+    return leftJoystick.getX() > -0.1 && leftJoystick.getX() < 0.1;
   }
 
   public boolean rightYAtRest() {
-    return rightJoystick.getY() > -0.05 && rightJoystick.getY() < 0.05;
+    return rightJoystick.getY() > -0.1 && rightJoystick.getY() < 0.1;
   }
 
   public boolean rightXAtRest() {
-    return rightJoystick.getX() > -0.05 && rightJoystick.getX() < 0.05;
+    return rightJoystick.getX() > -0.1 && rightJoystick.getX() < 0.1;
   }
 
   @Override

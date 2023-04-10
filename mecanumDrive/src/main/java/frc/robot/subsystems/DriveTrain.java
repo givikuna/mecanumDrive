@@ -29,6 +29,13 @@ public class DriveTrain extends SubsystemBase {
     group2.set(rightSpeed.get().doubleValue());
   }
 
+  public void horizontalDrive(Supplier<Double> group1Speed, Supplier<Double> group2Speed) {
+    group1 = new MotorControllerGroup(frontRight, backLeft);
+    group2 = new MotorControllerGroup(frontLeft, backRight);
+    group1.set(group1Speed.get().doubleValue());
+    group2.set(group2Speed.get().doubleValue());
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
