@@ -5,9 +5,10 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -22,6 +23,11 @@ public class RobotContainer {
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
+  private final Joystick leftJoystick = new Joystick(0); // used for moving around
+  private final Joystick rightJoystick = new Joystick(1); // used for turning
+
+  private final DriveTrain m_driveTrain = new DriveTrain();
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
@@ -34,7 +40,9 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    m_driveTrain.setDefaultCommand(new DriveCommand(m_driveTrain, () -> leftJoystick.getX(), () -> leftJoystick.getY(), () -> rightJoystick.getX(),() ->  rightJoystick.getY()));
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
