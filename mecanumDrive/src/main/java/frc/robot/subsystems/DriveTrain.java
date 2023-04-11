@@ -28,19 +28,37 @@ public class DriveTrain extends SubsystemBase {
     double vertical = leftY.get().doubleValue();
     double horizontal = leftX.get().doubleValue();
     double pivot = rightX.get().doubleValue();
-    if (nearZero(vertical)) {
+    if (!nearZero(pivot)) { // turn
+      group1.set(pivot);
+      group2.set(-pivot);
+    }
+    if (!nearZero(vertical) && !nearZero(horizontal)) { // diagonal
+      if (vertical > 0 && horizontal < 0) { // left diagonal forwards
+        frontRight.set(vertical);
+        backLeft.set(vertical);
+      }
+      if (vertical < 0 && horizontal < 0) { // left diagonal backwards
+        frontLeft.set(vertical);
+        backRight.set(vertical);
+      }
+      if (vertical > 0 && horizontal > 0) { // right diagonal forwards
+        frontLeft.set(vertical);
+        frontRight.set(vertical);
+      }
+      if (vertical < 0 && horizontal > 0) { // right diagonal backwards
+        frontRight.set(vertical);
+        backLeft.set(vertical);
+      }
+    }
+    if (nearZero(vertical)) { // go left/right
       frontLeft.set(-horizontal);
       backRight.set(-horizontal);
       frontRight.set(horizontal);
       backLeft.set(horizontal);
     }
-    if (nearZero(horizontal)) {
+    if (nearZero(horizontal)) { // go forwards/backwards
       group1.set(vertical);
       group2.set(vertical);
-    }
-    if (!nearZero(pivot)) {
-      group1.set(pivot);
-      group2.set(-pivot);
     }
   }
 
