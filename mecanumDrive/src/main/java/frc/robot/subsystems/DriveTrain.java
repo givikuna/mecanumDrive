@@ -24,16 +24,28 @@ public class DriveTrain extends SubsystemBase {
     //
   }
 
-  public void verticalDrive(Supplier<Double> leftSpeed, Supplier<Double> rightSpeed) {
-    group1.set(leftSpeed.get().doubleValue());
-    group2.set(rightSpeed.get().doubleValue());
+  public void drive(Supplier<Double> leftX, Supplier<Double> leftY, Supplier<Double> rightX, Supplier<Double> rightY) {
+    double vertical = leftY.get().doubleValue();
+    double horizontal = leftX.get().doubleValue();
+    double pivot = rightX.get().doubleValue();
+    if (nearZero(vertical)) {
+      frontLeft.set(-horizontal);
+      backRight.set(-horizontal);
+      frontRight.set(horizontal);
+      backLeft.set(horizontal);
+    }
+    if (nearZero(horizontal)) {
+      group1.set(vertical);
+      group2.set(vertical);
+    }
+    if (!nearZero(pivot)) {
+      group1.set(pivot);
+      group2.set(-pivot);
+    }
   }
 
-  public void horizontalDrive(Supplier<Double> group1Speed, Supplier<Double> group2Speed) {
-    group1 = new MotorControllerGroup(frontRight, backLeft);
-    group2 = new MotorControllerGroup(frontLeft, backRight);
-    group1.set(group1Speed.get().doubleValue());
-    group2.set(group2Speed.get().doubleValue());
+  public boolean nearZero(double d) {
+    return d > 0.05 || d < 0.05;
   }
 
   @Override

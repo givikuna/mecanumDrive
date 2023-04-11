@@ -28,8 +28,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   private DriveTrain driveTrain;
-  private VerticalDrive verticalDrive;
-  public HorizontalDrive horizontalDrive;
+  private DriveCommand driveCommand;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -95,52 +94,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    String mode = "";
-    boolean turns = false;
-    /*
-    String[] modes = {
-      "verticalDrive",
-      "horizontalDrive",
-      "diagonalDrive",
-      "rest"
-    };
-    */
-
-    if (leftXAtRest() && leftYAtRest() == false) {
-      verticalDrive = new VerticalDrive(driveTrain, () -> leftJoystick.getY(), () -> leftJoystick.getY());
-    } else if (leftXAtRest() == false && leftYAtRest()) {
-      horizontalDrive = new HorizontalDrive(driveTrain, () -> leftJoystick.getX(), () -> -leftJoystick.getX());
-    } else if (leftXAtRest() == false && leftYAtRest() == false) {
-      // uses DiagonalDrive - to be written later
-    }
-
-    if (rightAtRest() == false) {
-      // turns the robot
-    }
-  }
-
-  public boolean leftAtRest() {
-    return leftYAtRest() && leftXAtRest();
-  }
-
-  public boolean rightAtRest() {
-    return rightYAtRest() && rightXAtRest();
-  }
-
-  public boolean leftYAtRest() {
-    return leftJoystick.getY() > -0.1 && leftJoystick.getY() < 0.1;
-  }
-
-  public boolean leftXAtRest() {
-    return leftJoystick.getX() > -0.1 && leftJoystick.getX() < 0.1;
-  }
-
-  public boolean rightYAtRest() {
-    return rightJoystick.getY() > -0.1 && rightJoystick.getY() < 0.1;
-  }
-
-  public boolean rightXAtRest() {
-    return rightJoystick.getX() > -0.1 && rightJoystick.getX() < 0.1;
+    driveCommand = new DriveCommand(driveTrain, () -> leftJoystick.getX(), () -> leftJoystick.getY(), () -> rightJoystick.getX(), () -> rightJoystick.getY());
   }
 
   @Override

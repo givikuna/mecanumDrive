@@ -5,11 +5,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import java.util.function.*;
 
 /** An example command that uses an example subsystem. */
-public class VerticalDrive extends CommandBase {
+public class DriveCommand extends CommandBase {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final DriveTrain driveTrain;
-  private final Supplier<Double> leftSpeed;
-  private final Supplier<Double> rightSpeed;
+  private Supplier<Double> leftX;
+  private Supplier<Double> leftY;
+  private Supplier<Double> rightX;
+  private Supplier<Double> rightY;
 
   /**
    * Creates a new ExampleCommand.
@@ -18,23 +20,25 @@ public class VerticalDrive extends CommandBase {
    * @param aSpeed       The speed of the motors at group A
    * @param bSpeed       The speed of the motors at group B
    */
-  public VerticalDrive(DriveTrain m_driveTrain, Supplier<Double> leftSpeed, Supplier<Double> rightSpeed) {
+  public DriveCommand(DriveTrain m_driveTrain, Supplier<Double> leftX, Supplier<Double> leftY, Supplier<Double> rightX, Supplier<Double> rightY) {
     this.driveTrain = m_driveTrain;
     addRequirements(driveTrain);
-    this.leftSpeed = leftSpeed;
-    this.rightSpeed = rightSpeed;
+    this.leftX = leftX;
+    this.leftY = leftY;
+    this.rightX = rightX;
+    this.rightY = rightY;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("VerticalDrive initiliazed");
+    System.out.println("DriveCommand initiliazed");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    driveTrain.verticalDrive(leftSpeed, rightSpeed);
+    driveTrain.drive(leftX, leftY, rightX, rightY);
   }
 
   // Called once the command ends or is interrupted.
