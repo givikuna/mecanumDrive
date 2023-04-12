@@ -21,6 +21,15 @@ public class DriveCommand extends CommandBase {
    * @param bSpeed       The speed of the motors at group B
    */
   public DriveCommand(DriveTrain m_driveTrain, Supplier<Double> leftX, Supplier<Double> leftY, Supplier<Double> rightX, Supplier<Double> rightY) {
+    if (leftX == null)
+      leftX = () -> 0.0;
+    if (leftY == null)
+      leftY = () -> 0.0;
+    if (rightX == null)
+      rightX = () -> 0.0;
+    if (rightY == null)
+      rightY = () -> 0.0;
+
     this.driveTrain = m_driveTrain;
     addRequirements(driveTrain);
     this.leftX = leftX;
@@ -44,6 +53,8 @@ public class DriveCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    final Supplier<Double> ZERO = () -> 0.0;
+    driveTrain.drive(ZERO, ZERO, ZERO, ZERO);
   }
 
   // Returns true when the command should end.

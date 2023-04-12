@@ -11,55 +11,53 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class DriveTrain extends SubsystemBase {
-  private CANSparkMax frontLeft = new CANSparkMax(frontLeftID, MotorType.kBrushless);
-  private CANSparkMax backLeft = new CANSparkMax(backLeftID, MotorType.kBrushless);
+  private CANSparkMax frontLeft;
+  private CANSparkMax backLeft;
 
-  private CANSparkMax frontRight = new CANSparkMax(frontRightID, MotorType.kBrushless);
-  private CANSparkMax backRight = new CANSparkMax(backRightID, MotorType.kBrushless);
+  private CANSparkMax frontRight;
+  private CANSparkMax backRight;
 
-  private MotorControllerGroup group1 = new MotorControllerGroup(frontLeft, backLeft);
-  private MotorControllerGroup group2 = new MotorControllerGroup(frontRight, backRight);
+  private MotorControllerGroup group1;
+  private MotorControllerGroup group2;
 
   public DriveTrain() {
-    //
+    frontLeft = new CANSparkMax(frontLeftID, MotorType.kBrushless);
+    backLeft = new CANSparkMax(backLeftID, MotorType.kBrushless);
+    frontRight = new CANSparkMax(frontRightID, MotorType.kBrushless);
+    backRight = new CANSparkMax(backRightID, MotorType.kBrushless);
+    group1 = new MotorControllerGroup(frontLeft, backRight);
+    group2 = new MotorControllerGroup(frontRight, backLeft);
   }
 
   public void drive(Supplier<Double> leftX, Supplier<Double> leftY, Supplier<Double> rightX, Supplier<Double> rightY) {
     double vertical = leftY.get().doubleValue();
     double horizontal = leftX.get().doubleValue();
     double pivot = rightX.get().doubleValue();
-    if (!nearZero(pivot)) { // turn
-      group1.set(pivot);
-      group2.set(-pivot);
-    }
-    if (!nearZero(vertical) && !nearZero(horizontal)) { // diagonal
-      if (vertical > 0 && horizontal < 0) { // left diagonal forwards
-        frontRight.set(vertical);
-        backLeft.set(vertical);
+    double g1 = 0.0;
+    double g2 = 0.0;
+    if (!nearZero(pivot)) { // turns
+      group1 = new MotorControllerGroup(frontLeft, backLeft);
+      group2 = new MotorControllerGroup(frontRight, backRight);
+
+      g1 = pivot;
+      g2 = -pivot;
+    } else if (!nearZero(horizontal)) { // goes forwards/backwards
+      g1 = vertical;
+      g2 = vertical;
+    } else if (!nearZero(vertical)) { // goes left/right
+      g1 = -horizontal;
+      g2 = horizontal;
+    } else { // diagonals
+      if ((vertical > 0 && horizontal < 0) || (vertical < 0 && horizontal > 0)) {
+        g1 = horizontal;
+        g2 = vertical;
+      } else {
+        g1 = vertical;
+        g2 = horizontal;
       }
-      if (vertical < 0 && horizontal < 0) { // left diagonal backwards
-        frontLeft.set(vertical);
-        backRight.set(vertical);
-      }
-      if (vertical > 0 && horizontal > 0) { // right diagonal forwards
-        frontLeft.set(vertical);
-        frontRight.set(vertical);
-      }
-      if (vertical < 0 && horizontal > 0) { // right diagonal backwards
-        frontRight.set(vertical);
-        backLeft.set(vertical);
-      }
     }
-    if (nearZero(vertical)) { // go left/right
-      frontLeft.set(-horizontal);
-      backRight.set(-horizontal);
-      frontRight.set(horizontal);
-      backLeft.set(horizontal);
-    }
-    if (nearZero(horizontal)) { // go forwards/backwards
-      group1.set(vertical);
-      group2.set(vertical);
-    }
+    group1.set(g1);
+    group2.set(g2);
   }
 
   public boolean nearZero(double d) {
