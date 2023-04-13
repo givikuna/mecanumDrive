@@ -21,6 +21,9 @@ public class DriveCommand extends CommandBase {
    * @param bSpeed       The speed of the motors at group B
    */
   public DriveCommand(DriveTrain m_driveTrain, Supplier<Double> leftX, Supplier<Double> leftY, Supplier<Double> rightX, Supplier<Double> rightY) {
+    this.driveTrain = m_driveTrain;
+    addRequirements(driveTrain);
+
     if (leftX == null)
       leftX = () -> 0.0;
     if (leftY == null)
@@ -30,8 +33,6 @@ public class DriveCommand extends CommandBase {
     if (rightY == null)
       rightY = () -> 0.0;
 
-    this.driveTrain = m_driveTrain;
-    addRequirements(driveTrain);
     this.leftX = leftX;
     this.leftY = leftY;
     this.rightX = rightX;
