@@ -94,7 +94,8 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    driveCommand = new DriveCommand(driveTrain, () -> leftJoystick.getX(), () -> leftJoystick.getY(), () -> rightJoystick.getX(), () -> rightJoystick.getY());
+    driveCommand = new DriveCommand(driveTrain, () -> leftJoystick.getX(), () -> leftJoystick.getY(), () -> leftJoystick.getZ(), () -> rightJoystick.getX(), () -> rightJoystick.getY(), () -> rightJoystick.getZ());
+    driveCommand.schedule();
   }
 
   @Override

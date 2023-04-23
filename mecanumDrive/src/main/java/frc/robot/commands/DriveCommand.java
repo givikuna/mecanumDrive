@@ -10,8 +10,10 @@ public class DriveCommand extends CommandBase {
   private final DriveTrain driveTrain;
   private Supplier<Double> leftX;
   private Supplier<Double> leftY;
+  private Supplier<Double> leftZ;
   private Supplier<Double> rightX;
   private Supplier<Double> rightY;
+  private Supplier<Double> rightZ;
 
   /**
    * Creates a new ExampleCommand.
@@ -20,23 +22,16 @@ public class DriveCommand extends CommandBase {
    * @param aSpeed       The speed of the motors at group A
    * @param bSpeed       The speed of the motors at group B
    */
-  public DriveCommand(DriveTrain m_driveTrain, Supplier<Double> leftX, Supplier<Double> leftY, Supplier<Double> rightX, Supplier<Double> rightY) {
+  public DriveCommand(DriveTrain m_driveTrain, Supplier<Double> leftX, Supplier<Double> leftY, Supplier<Double> leftZ, Supplier<Double> rightX, Supplier<Double> rightY, Supplier<Double> rightZ) {
     this.driveTrain = m_driveTrain;
     addRequirements(driveTrain);
-
-    if (leftX == null)
-      leftX = () -> 0.0;
-    if (leftY == null)
-      leftY = () -> 0.0;
-    if (rightX == null)
-      rightX = () -> 0.0;
-    if (rightY == null)
-      rightY = () -> 0.0;
-
+  
     this.leftX = leftX;
     this.leftY = leftY;
+    this.leftZ = leftZ;
     this.rightX = rightX;
     this.rightY = rightY;
+    this.rightZ = rightZ;
   }
 
   // Called when the command is initially scheduled.
@@ -48,14 +43,14 @@ public class DriveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    driveTrain.drive(leftX, leftY, rightX, rightY);
+    driveTrain.drive(leftX, leftY, leftZ, rightX, rightY, rightZ);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     final Supplier<Double> ZERO = () -> 0.0;
-    driveTrain.drive(ZERO, ZERO, ZERO, ZERO);
+    driveTrain.drive(ZERO, ZERO,ZERO, ZERO, ZERO, ZERO);
   }
 
   // Returns true when the command should end.
