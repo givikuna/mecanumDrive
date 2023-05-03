@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -41,7 +43,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    m_driveTrain.setDefaultCommand(new DriveCommand(m_driveTrain, () -> leftJoystick.getX(), () -> leftJoystick.getY(), () -> rightJoystick.getX(),() ->  rightJoystick.getY()));
+    m_driveTrain.setDefaultCommand(new DriveCommand(m_driveTrain, () -> leftJoystick.getX(), () -> leftJoystick.getZ(), () -> leftJoystick.getY(), () -> rightJoystick.getX(),() ->  rightJoystick.getY(), () -> rightJoystick.getZ()));
   }
 
   /**
@@ -51,6 +53,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new DriveCommand(m_driveTrain, () -> 0.0, () -> 0.0, () -> 0.0, () -> 0.0);
+    Supplier<Double> ZERO = () -> 0.0;
+    return new DriveCommand(m_driveTrain, ZERO, ZERO, ZERO, ZERO, ZERO, ZERO);
   }
 }
